@@ -1,17 +1,59 @@
 
-// Your Code Here
-let response = await fetch('http://localhost:9001/updateBook', {
-    method: "PATCH",
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        "title": "Legends of Arathrae"
-    })
-});
+// // Your Code Here
+// let response = await fetch('http://localhost:3001/updateBook', {
+//     method: "PATCH",
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//         "id": 3,
+//         "title": "Legends of Arathrae"
+//     })
+// });
 
-if (!response.ok) {
-    throw new Error('Failed to update book title');
+// let updateBook = await response.json();
+// console.log(updateBook)
+
+
+async function main() {
+
+    let response = await fetch('http://localhost:3001/listBooks')
+
+    let books = await response.json()
+
+    books.forEach(display)
+
 }
 
-console.log('Book title updated successfully');
+function display(book) {
+
+    let root = document.querySelector('#root')
+
+    let li = document.createElement('li')
+    li.textContent = book.title
+
+    let userInput = document.createElement('input')
+    userInput.type = 'number'
+    userInput.value = book.quantity
+
+    let button = document.createElement('button')
+    button.textContent = 'save'
+
+    button.addEventListener('click', () => {
+        fetch('http://localhost:3001/updateBook', {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: book.id,
+                quantity: userInput.value
+            })
+        })
+    })
+
+    li.append(userInput, button)
+    root.append(li)
+}
+
+main();
